@@ -1,11 +1,11 @@
-import { getRepository } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import { isUuid } from 'uuidv4';
 import AppError from '../errors/AppError';
-import Transaction from '../models/Transaction';
+import TransactionRepository from '../repositories/TransactionsRepository';
 
 class DeleteTransactionService {
   public async execute(id: string): Promise<void> {
-    const transactionRepository = getRepository(Transaction);
+    const transactionRepository = getCustomRepository(TransactionRepository);
 
     if (!isUuid(id)) {
       throw new AppError('Transaction not found.');

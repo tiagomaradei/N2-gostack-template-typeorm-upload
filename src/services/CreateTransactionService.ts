@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm';
+import { getRepository, getCustomRepository } from 'typeorm';
 import AppError from '../errors/AppError';
 import Transaction from '../models/Transaction';
 import TransactionsRepository from '../repositories/TransactionsRepository';
@@ -18,10 +18,9 @@ class CreateTransactionService {
     type,
     category_title,
   }: Request): Promise<Transaction> {
-    const transactionRepository = new TransactionsRepository();
-    const transactionRepo = getRepository(Transaction);
+    const transactionsRepository = getCustomRepository(TransactionsRepository);
     const categoryRepository = getRepository(Category);
-    const balance = await transactionRepository.getBalance();
+    const balance = await transactionsRepository.getBalance();
 
     const isValidTransaction = (): boolean => {
       if (type === 'outcome') {
@@ -52,14 +51,14 @@ class CreateTransactionService {
       category_id = category[0].id;
     }
 
-    const transaction = transactionRepo.create({
+    const transaction = transactionsRepository.create({
       title,
       category_id,
       type,
       value,
     });
 
-    await transactionRepo.save(transaction);
+    await transactionsRepository.save(transaction);
 
     return transaction;
   }
